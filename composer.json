@@ -12,7 +12,7 @@
         "php": "^8.2|^8.3",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "mongodb/laravel-mongodb": "5.2"
+        "mongodb/laravel-mongodb": "^5.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -79,10 +79,6 @@
         }
     },
     "config": {
-        "platform": {
-"ext-mongodb": "1.21.0",
-"php": "8.4.0"
-},
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
