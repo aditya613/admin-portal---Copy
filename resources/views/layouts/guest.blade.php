@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 bg-clip-text text-transparent tracking-tight">OffCampus</h1>
+                        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 bg-clip-text text-transparent tracking-tight">Placify</h1>
                         <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">Admin Portal</p>
                     </div>
                 </a>

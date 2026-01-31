@@ -160,7 +160,7 @@
                         </div>
                     </div>
                     <div>
-                        <h1 class="text-xl font-extrabold text-white tracking-tight drop-shadow-sm">OffCampus</h1>
+                        <h1 class="text-xl font-extrabold text-white tracking-tight drop-shadow-sm">Placify</h1>
                         <p class="text-xs font-semibold text-blue-200/90 tracking-wide uppercase">Admin Portal</p>
                     </div>
                 </div>

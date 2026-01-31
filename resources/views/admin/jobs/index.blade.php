@@ -4,7 +4,19 @@
 
 @section('content')
 <div class="space-y-8">
-
+    <!-- Header with Fetch Jobs Button -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Job Listings</h1>
+            <p class="text-slate-600 mt-1">Manage and fetch job opportunities</p>
+        </div>
+        <button onclick="openFetchJobsModal()" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-700 px-5 py-3 text-sm font-semibold text-white shadow-md hover:shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:-translate-y-0.5">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Fetch More Jobs
+        </button>
+    </div>
 
     <!-- Stats -->
     <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -275,5 +287,190 @@ function showAlert(message, type = 'info') {
     
     setTimeout(() => alertDiv.remove(), 3000);
 }
+
+function openFetchJobsModal() {
+    const modal = document.getElementById('fetchJobsModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFetchJobsModal() {
+    const modal = document.getElementById('fetchJobsModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+async function fetchMoreJobs() {
+    const searchTerm = document.getElementById('search_term').value;
+    const location = document.getElementById('location').value;
+    const resultsWanted = parseInt(document.getElementById('results_wanted').value);
+    const hoursOld = parseInt(document.getElementById('hours_old').value);
+    const submitBtn = document.getElementById('submitFetchBtn');
+    const spinner = document.getElementById('fetchSpinner');
+
+    // Validation
+    if (!searchTerm || !location) {
+        showAlert('Please fill in all required fields', 'error');
+        return;
+    }
+
+    // Disable button and show spinner
+    submitBtn.disabled = true;
+    spinner.classList.remove('hidden');
+
+    try {
+        const response = await fetch('https://team-404-found-5uq1.onrender.com/scrape', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                search_term: searchTerm,
+                location: location,
+                results_wanted: resultsWanted,
+                hours_old: hoursOld
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.status === 'started') {
+            showAlert(data.message || `Scraping started for '${searchTerm}' in '${location}'`, 'success');
+            closeFetchJobsModal();
+            
+            // Reset form
+            document.getElementById('fetchJobsForm').reset();
+            
+            // Optional: Reload page after a delay to show new jobs
+            setTimeout(() => {
+                showAlert('Refreshing job listings...', 'info');
+                location.reload();
+            }, 3000);
+        } else {
+            showAlert(data.message || 'Failed to start job scraping', 'error');
+        }
+    } catch (error) {
+        console.error('Error fetching jobs:', error);
+        showAlert('An error occurred while fetching jobs. Please try again.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        spinner.classList.add('hidden');
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeFetchJobsModal();
+    }
+});
 </script>
+
+<!-- Fetch Jobs Modal -->
+<div id="fetchJobsModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-5 flex items-center justify-between rounded-t-2xl">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white">Fetch More Jobs</h2>
+                    <p class="text-primary-100 text-sm">Search and import new job listings</p>
+                </div>
+            </div>
+            <button onclick="closeFetchJobsModal()" class="text-white/80 hover:text-white transition">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="fetchJobsForm" onsubmit="event.preventDefault(); fetchMoreJobs();" class="p-6 space-y-5">
+            <!-- Search Term -->
+            <div>
+                <label for="search_term" class="block text-sm font-semibold text-slate-700 mb-2">
+                    Search Term <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="search_term" name="search_term" value="software engineer" required
+                    class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 px-4 py-2.5"
+                    placeholder="e.g., software engineer, data analyst">
+                <p class="mt-1 text-xs text-slate-500">Enter job title or keywords to search for</p>
+            </div>
+
+            <!-- Location -->
+            <div>
+                <label for="location" class="block text-sm font-semibold text-slate-700 mb-2">
+                    Location <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="location" name="location" value="Gurugram, Haryana" required
+                    class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 px-4 py-2.5"
+                    placeholder="e.g., Gurugram, Haryana">
+                <p class="mt-1 text-xs text-slate-500">City and state/region</p>
+            </div>
+
+            <!-- Results Wanted -->
+            <div>
+                <label for="results_wanted" class="block text-sm font-semibold text-slate-700 mb-2">
+                    Number of Results
+                </label>
+                <input type="number" id="results_wanted" name="results_wanted" value="30" min="1" max="100"
+                    class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 px-4 py-2.5">
+                <p class="mt-1 text-xs text-slate-500">Maximum number of jobs to fetch (1-100)</p>
+            </div>
+
+            <!-- Hours Old -->
+            <div>
+                <label for="hours_old" class="block text-sm font-semibold text-slate-700 mb-2">
+                    Job Age (Hours)
+                </label>
+                <select id="hours_old" name="hours_old"
+                    class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 px-4 py-2.5">
+                    <option value="24">Last 24 hours</option>
+                    <option value="48">Last 2 days</option>
+                    <option value="72">Last 3 days</option>
+                    <option value="96" selected>Last 4 days</option>
+                    <option value="168">Last week</option>
+                </select>
+                <p class="mt-1 text-xs text-slate-500">Only fetch jobs posted within this timeframe</p>
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex gap-3">
+                    <svg class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="text-sm text-blue-900">
+                        <p class="font-semibold mb-1">How it works</p>
+                        <p class="text-blue-800">This will fetch jobs from external sources based on your criteria. The process may take a few moments to complete.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeFetchJobsModal()"
+                    class="flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                    Cancel
+                </button>
+                <button type="submit" id="submitFetchBtn"
+                    class="flex-1 rounded-lg bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2.5 text-sm font-semibold text-white hover:from-primary-700 hover:to-primary-800 shadow-md hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg id="fetchSpinner" class="hidden animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Start Fetching
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection
