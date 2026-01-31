@@ -150,7 +150,7 @@ class StudentController extends Controller
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                 ])
-                ->post('https://team-404-found-1.onrender.com/analyze', [
+                ->post('https://resume-mp10.onrender.com', [
                     'student_id' => $studentId,
                     'cloudinary_url' => $request->cloudinary_url
                 ]);
