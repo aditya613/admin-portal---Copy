@@ -52,15 +52,15 @@ Placement teams often manage data across multiple sheets and tools. This portal 
 
 | Dashboard | Jobs List |
 | --- | --- |
-| ![Dashboard](docs/screenshots/dashboard.svg) | ![Jobs List](docs/screenshots/jobs-list.svg) |
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Jobs List](docs/screenshots/jobs-list.png) |
 
 | Job Detail | Fetch More Jobs |
 | --- | --- |
-| ![Job Detail](docs/screenshots/job-detail.svg) | ![Fetch Jobs Modal](docs/screenshots/fetch-jobs-modal.svg) |
+| ![Job Detail](docs/screenshots/job-detail.png) | ![Fetch Jobs Modal](docs/screenshots/fetch-jobs-modal.png) |
 
 | Students | Applications |
 | --- | --- |
-| ![Students](docs/screenshots/students-list.svg) | ![Applications](docs/screenshots/applications-list.svg) |
+| ![Students](docs/screenshots/students-list.png) | ![Applications](docs/screenshots/applications-list.png) |
 
 ## Tech Stack
 
